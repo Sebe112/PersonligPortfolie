@@ -1,17 +1,19 @@
 using Microsoft.EntityFrameworkCore;
+using MyDAL.Data;
+using MyDAL.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddOpenApi();
-builder.Services.AddControllers();
+builder.Services.AddControllers();  
 
 var conStr = builder.Configuration.GetConnectionString("DefaultConnection");
-builder.Services.AddDbContext<DatabaseContext>(obj => obj.UseSqlServer(conStr));
+builder.Services.AddDbContext<DbContext>(obj => obj.UseSqlServer(conStr));
 
 using (var scope = builder.Services.BuildServiceProvider().CreateScope())
 {
-    var dbContext = scope.ServiceProvider.GetRequiredService<DatabaseContext>();    
+    var dbContext = scope.ServiceProvider.GetRequiredService<DbContext>();    
     if (dbContext.Database.CanConnect())
     {
         Console.WriteLine("Database connected successfully");
