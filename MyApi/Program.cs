@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
-using MyDAL.Data;
-using MyDAL.Repositories;
+using MyApi.Data;
+using Swashbuckle.AspNetCore.SwaggerUI;
 
 var builder = WebApplication.CreateBuilder(args);
 
