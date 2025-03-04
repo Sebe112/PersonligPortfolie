@@ -1,6 +1,8 @@
-using Microsoft.EntityFrameworkCore;
 using MyApi.Data;
-using Swashbuckle.AspNetCore.SwaggerUI;
+using MyDAL.Interfaces;
+using MyDAL.Models;
+using MyDAL.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +12,13 @@ builder.Services.AddControllers();
 
 var conStr = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<DbContext>(obj => obj.UseSqlServer(conStr));
+
+builder.Services.AddScoped<IContact, ContactRepository>();
+builder.Services.AddScoped<IEducation, EducationRepository>();
+builder.Services.AddScoped<IExperience, ExperienceRepository>();
+builder.Services.AddScoped<IProject, ProjectRepository>();
+builder.Services.AddScoped<ISkill, SkillRepository>();
+builder.Services.AddScoped<IProjectSkill, ProjectSkillRepository>();
 
 using (var scope = builder.Services.BuildServiceProvider().CreateScope())
 {
