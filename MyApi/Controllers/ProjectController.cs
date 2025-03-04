@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using MyDAL.Models;
 using MyDAL.Interfaces;
+using MyApi.DTOs;
 
 namespace MyApi.Controllers
 {
@@ -34,20 +35,40 @@ namespace MyApi.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<Project>> AddProject(Project project)
+        public async Task<ActionResult<Project>> AddProject(ProjectDTO projectDto)
         {
+            var project = new Project
+            {
+                Title = projectDto.Title,
+                Description = projectDto.Description,
+                Technologies = projectDto.Technologies,
+                RepositoryUrl = projectDto.RepositoryUrl
+            };
+
             await _projectRepository.AddProjectAsync(project);
             return CreatedAtAction(nameof(GetProjectById), new { id = project.Id }, project);
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateProject(int id, Project project)
+        public async Task<IActionResult> UpdateProject(int id, ProjectUpdateDTO projectDto)
         {
-            if (id != project.Id)
+            if (id != projectDto.Id)
             {
-                return BadRequest();
+                return BadRequest("ID in URL and body must match.");
             }
-            await _projectRepository.UpdateProjectAsync(project);
+
+            var existingProject = await _projectRepository.GetProjectByIdAsync(id);
+            if (existingProject == null)
+            {
+                return NotFound();
+            }
+
+            existingProject.Title = projectDto.Title;
+            existingProject.Description = projectDto.Description;
+            existingProject.Technologies = projectDto.Technologies;
+            existingProject.RepositoryUrl = projectDto.RepositoryUrl;
+
+            await _projectRepository.UpdateProjectAsync(existingProject);
             return NoContent();
         }
 

@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using MyDAL.Models;
 using MyDAL.Interfaces;
+using MyApi.DTOs;
 
 namespace MyApi.Controllers
 {
@@ -30,8 +31,14 @@ namespace MyApi.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddProjectSkill(ProjectSkill projectSkill)
+        public async Task<IActionResult> AddProjectSkill(ProjectSkillDTO projectSkillDto)
         {
+            var projectSkill = new ProjectSkill
+            {
+                ProjectId = projectSkillDto.ProjectId,
+                SkillId = projectSkillDto.SkillId
+            };
+
             await _projectSkillRepository.AddProjectSkillAsync(projectSkill);
             return Ok(new { message = "Skill added to project successfully!" });
         }

@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using MyDAL.Models;
 using MyDAL.Interfaces;
+using MyApi.DTOs;
 
 namespace MyApi.Controllers
 {
@@ -34,20 +35,35 @@ namespace MyApi.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<Skill>> AddSkill(Skill skill)
+        public async Task<ActionResult<Skill>> AddSkill(SkillDTO skillDto)
         {
+            var skill = new Skill
+            {
+                Name = skillDto.Name,
+                Proficiency = skillDto.Proficiency
+            };
+
             await _skillRepository.AddSkillAsync(skill);
             return CreatedAtAction(nameof(GetSkillById), new { id = skill.Id }, skill);
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateSkill(int id, Skill skill)
+        public async Task<IActionResult> UpdateSkill(int id, SkillUpdateDTO skillDto)
         {
-            if (id != skill.Id)
+            if (id != skillDto.Id)
             {
-                return BadRequest();
+                return BadRequest("ID in URL and body must match.");
             }
-            await _skillRepository.UpdateSkillAsync(skill);
+
+            var existingSkill = await _skillRepository.GetSkillByIdAsync(id);
+            if (existingSkill == null)
+            {
+                return NotFound();
+            }
+            existingSkill.Name = skillDto.Name;
+            existingSkill.Proficiency = skillDto.Proficiency;
+
+            await _skillRepository.UpdateSkillAsync(existingSkill);
             return NoContent();
         }
 
