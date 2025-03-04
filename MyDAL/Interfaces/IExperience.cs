@@ -1,6 +1,5 @@
 using MyDAL.Models;
 
-
 namespace MyDAL.Interfaces
 {
     public interface IExperience
