@@ -1,9 +1,10 @@
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using MyDAL.Models;
 
 namespace MyApi.Data
 {
-    public class PortfolioDbContext : DbContext
+    public class PortfolioDbContext : IdentityDbContext<User>
     {
         public PortfolioDbContext(DbContextOptions<PortfolioDbContext> options) : base(options) { }
 

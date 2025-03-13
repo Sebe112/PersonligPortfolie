@@ -14,6 +14,18 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddOpenApi();
 builder.Services.AddControllers();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll",
+        policy =>
+        {
+            policy.WithOrigins("http://localhost:4200")
+                  .AllowAnyMethod()
+                  .AllowAnyHeader()
+                  .AllowCredentials();
+        });
+});
+
 var conStr = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<PortfolioDbContext>(options => options.UseSqlServer(conStr));
 
@@ -51,6 +63,17 @@ builder.Services.AddScoped<IProjectSkill, ProjectSkillRepository>();
 
 var app = builder.Build();
 
+var port = builder.Configuration.GetValue<int?>("ASPNETCORE_HTTPS_PORT") ?? 5031;
+app.UseHttpsRedirection();
+app.UseHsts();
+
+app.UseCors("AllowAll");
+
+app.UseAuthentication();
+app.UseAuthorization();
+
+app.MapControllers();
+
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
@@ -68,11 +91,6 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
     app.UseSwaggerUI(options => options.SwaggerEndpoint("/openapi/v1.json", "MyApi"));
 }
-
-app.UseHttpsRedirection();
-app.UseAuthentication();
-app.UseAuthorization();
-app.MapControllers();
 
 app.Run();
 
@@ -97,11 +115,11 @@ static async Task SeedAdminUser(UserManager<User> userManager, RoleManager<Ident
         if (result.Succeeded)
         {
             await userManager.AddToRoleAsync(newAdmin, "Admin");
-            Console.WriteLine("Admin user created successfully!");
+            Console.WriteLine("✅ Admin user created successfully!");
         }
     }
     else
     {
-        Console.WriteLine("Admin user already exists.");
+        Console.WriteLine("✅ Admin user already exists.");
     }
 }

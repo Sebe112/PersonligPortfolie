@@ -32,17 +32,22 @@ You can access the API documentation and test the endpoints using Swagger UI at 
 
 ### Example
 
-```
+```json
 {
-  "Logging": {
-    "LogLevel": {
-      "Default": "Information",
-      "Microsoft.AspNetCore": "Warning"
+    "Logging": {
+      "LogLevel": {
+        "Default": "Information",
+        "Microsoft.AspNetCore": "Warning"
+      }
+    },
+    "AllowedHosts": "*",
+    "ConnectionStrings": {
+      "DefaultConnection": "Server=localhost;Database=MyApiDB;Trusted_Connection=True;Encrypt=False"
+    },
+    "Jwt": {
+      "Key": "MySuperSecureLongKeyThatIsAtLeast32Characters!",
+      "Issuer": "MyApi",
+      "Audience": "MyApiUsers"
     }
-  },
-  "AllowedHosts": "*",
-  "ConnectionStrings": {
-    "DefaultConnection": "Server=localhost;Database=MyApiDB;Trusted_Connection=True;Encrypt=False"
-  }
 }
 ```

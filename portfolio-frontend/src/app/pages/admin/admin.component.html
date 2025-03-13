@@ -1,0 +1,16 @@
+<h2>Admin Panel - Projekter</h2>
+
+<h3>Tilføj Nyt Projekt</h3>
+<input [(ngModel)]="newProject.title" placeholder="Titel">
+<input [(ngModel)]="newProject.description" placeholder="Beskrivelse">
+<input [(ngModel)]="newProject.technologies" placeholder="Teknologier">
+<input [(ngModel)]="newProject.repositoryUrl" placeholder="Repository URL">
+<button (click)="addProject()">Tilføj</button>
+
+<h3>Eksisterende Projekter</h3>
+<ul>
+  <li *ngFor="let project of projects">
+    <b>{{ project.title }}</b> - {{ project.technologies }}
+    <button (click)="deleteProject(project.id)">Slet</button>
+  </li>
+</ul>
